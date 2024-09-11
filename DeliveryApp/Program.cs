@@ -3,7 +3,7 @@
     abstract class Delivery
     {
         public string Address;
-        public string DeliveryTime;
+        public DateTime DeliveryTime;
         public List<string> Products;
         public abstract void GetSpecificDeliveryData();
         public abstract void DisplaySpecificDeliveryData();
@@ -132,8 +132,8 @@
             Console.WriteLine("Enter delivery address:");
             Delivery.Address = Console.ReadLine();
             Delivery.GetProducts();
-            Console.WriteLine("Enter desired delivery time:");
-            Delivery.DeliveryTime = Console.ReadLine();
+            Console.WriteLine("Enter desired delivery time (YYYY-MM-DD HH:mm):");
+            Delivery.DeliveryTime = DateTime.Parse(Console.ReadLine());
             Delivery.GetDeliveryTypeFromUser();
 
         }
@@ -144,7 +144,7 @@
             Console.WriteLine($"Order Number: {Number}");
             Console.WriteLine($"Delivery Address: {Delivery.Address}");
             Console.WriteLine($"Products: {string.Join(", ", Delivery.Products)}");
-            Console.WriteLine($"Delivery Time: {Delivery.DeliveryTime}");
+            Console.WriteLine($"Delivery Time {Delivery.DeliveryTime.ToString("yyyy-MM-dd HH:mm")}");
             Delivery.GetDeliveryType();
             Delivery.DisplaySpecificDeliveryData();
         }
