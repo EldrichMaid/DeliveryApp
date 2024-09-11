@@ -5,6 +5,8 @@
         public string Address;
         public string DeliveryTime;
         public List<string> Products;
+        public abstract void GetSpecificDeliveryData();
+        public abstract void DisplaySpecificDeliveryData();
         public abstract void GetDeliveryType();
         public void GetProducts()
         {
@@ -67,9 +69,31 @@
 
     class HomeDelivery : Delivery
     {
+        public int EntranceNumber { get; set; }
+        public string EntranceCode { get; set; }
+        public int FloorNumber { get; set; }
+        public int DoorNumber { get; set; }
         public override void GetDeliveryType()
         {
             Console.WriteLine("Delivery Type: Home Delivery");
+        }
+        public override void GetSpecificDeliveryData()
+        {
+            Console.WriteLine("Enter entrance number:");
+            EntranceNumber = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter entrance code:");
+            EntranceCode = Console.ReadLine();
+            Console.WriteLine("Enter floor number:");
+            FloorNumber = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter door number:");
+            DoorNumber = int.Parse(Console.ReadLine());
+        }
+        public override void DisplaySpecificDeliveryData()
+        {
+            Console.WriteLine($"Entrance Number: {EntranceNumber}");
+            Console.WriteLine($"Entrance Code: {EntranceCode}");
+            Console.WriteLine($"Floor Number: {FloorNumber}");
+            Console.WriteLine($"Door Number: {DoorNumber}");
         }
     }
 
@@ -122,6 +146,7 @@
             Console.WriteLine($"Products: {string.Join(", ", Delivery.Products)}");
             Console.WriteLine($"Delivery Time: {Delivery.DeliveryTime}");
             Delivery.GetDeliveryType();
+            Delivery.DisplaySpecificDeliveryData();
         }
     }
 
