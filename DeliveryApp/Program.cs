@@ -169,9 +169,47 @@
 
     class CorpDelivery : Delivery
     {
+        internal bool IsWorkingHoursDelivery { get; set; }
+        internal int WorkingHour { get; set; }
+        internal bool NeedsPass { get; set; }
         public override void GetDeliveryType()
         {
             Console.WriteLine("Delivery Type: Corporate Delivery");
+        }
+        public override void GetSpecificDeliveryData()
+        {
+            Console.WriteLine("Enter working hour (24-hour format):");
+            while (true)
+            {
+                if (int.TryParse(Console.ReadLine(), out int hour) && hour >= 0 && hour <= 23)
+                {
+                    WorkingHour = hour;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid working hour. Please enter a number between 0 and 23.");
+                }
+            }
+            Console.WriteLine("Is the delivery required during working hours? (yes/no)");
+            string workingHoursAnswer = Console.ReadLine();
+            IsWorkingHoursDelivery = workingHoursAnswer.ToLower() == "yes";
+            Console.WriteLine("Is a pass required to access the workspace? (yes/no)");
+            string passAnswer = Console.ReadLine();
+            NeedsPass = passAnswer.ToLower() == "yes";
+        }
+        public override void DisplaySpecificDeliveryData()
+        {
+            Console.WriteLine($"Working Hour: {WorkingHour:D2}");
+            Console.WriteLine($"Pass Required: {NeedsPass}");
+            if (IsWorkingHoursDelivery)
+            {
+                Console.WriteLine("Delivery required during working hours.");
+            }
+            else
+            {
+                Console.WriteLine("Delivery not required during working hours.");
+            }
         }
     }
 
