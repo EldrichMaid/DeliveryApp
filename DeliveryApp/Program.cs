@@ -69,10 +69,10 @@
 
     class HomeDelivery : Delivery
     {
-        public int EntranceNumber { get; set; }
-        public string EntranceCode { get; set; }
-        public int FloorNumber { get; set; }
-        public int DoorNumber { get; set; }
+        internal int EntranceNumber { get; set; }
+        internal string EntranceCode { get; set; }
+        internal int FloorNumber { get; set; }
+        internal int DoorNumber { get; set; }
         public override void GetDeliveryType()
         {
             Console.WriteLine("Delivery Type: Home Delivery");
@@ -99,9 +99,23 @@
 
     class PickPointDelivery : Delivery
     {
+        internal string PickPointCode { get; set; }
         public override void GetDeliveryType()
         {
             Console.WriteLine("Delivery Type: Pick Point Delivery");
+        }
+        public override void GetSpecificDeliveryData()
+        {
+            Console.WriteLine("Choose a pick-up point (a, b, c, d):");
+            PickPointCode = Console.ReadLine();
+            if (!"abcd".Contains(PickPointCode.ToLower()))
+            {
+                Console.WriteLine("Invalid pick-up point code.");
+            }  
+        }
+        public override void DisplaySpecificDeliveryData()
+        {
+            Console.WriteLine($"Pick-up Point: {PickPointCode}");
         }
     }
 
