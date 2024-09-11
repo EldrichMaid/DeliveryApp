@@ -18,7 +18,9 @@
                 product = Console.ReadLine();
                 if (product != "done")
                 {
-                    Products.Add(product);
+                    Console.WriteLine("Enter quantity for " + product + ":");
+                    int quantity = int.Parse(Console.ReadLine());
+                    Products.Add($"{product} x {quantity}");
                 }
             }
         }
@@ -121,9 +123,47 @@
 
     class RetailDelivery : Delivery
     {
+        internal bool IsToWarehouse { get; set; }
+        internal string Department { get; set; }
+        internal bool NeedsUnloading { get; set; }
         public override void GetDeliveryType()
         {
             Console.WriteLine("Delivery Type: Retail Delivery");
+        }
+        public override void GetSpecificDeliveryData()
+        {
+            Console.WriteLine("Is the delivery to a warehouse or a store? (warehouse/store)");
+            string deliveryLocation = Console.ReadLine();
+            if (deliveryLocation.ToLower() == "warehouse")
+            {
+                IsToWarehouse = true;
+            }
+            else if (deliveryLocation.ToLower() == "store")
+            {
+                IsToWarehouse = false;
+                Console.WriteLine("Enter department:");
+                Department = Console.ReadLine();
+                Console.WriteLine("Does the delivery need unloading? (yes/no)");
+                string unloadingAnswer = Console.ReadLine();
+                NeedsUnloading = unloadingAnswer.ToLower() == "yes";
+            }
+            else
+            {
+                Console.WriteLine("Invalid delivery location.");
+            }
+        }
+        public override void DisplaySpecificDeliveryData()
+        {
+            if (IsToWarehouse)
+            {
+                Console.WriteLine("Delivery Location: Warehouse");
+            }
+            else
+            {
+                Console.WriteLine("Delivery Location: Store");
+                Console.WriteLine($"Department: {Department}");
+                Console.WriteLine($"Unloading Required: {NeedsUnloading}");
+            }
         }
     }
 
@@ -157,7 +197,14 @@
         {
             Console.WriteLine($"Order Number: {Number}");
             Console.WriteLine($"Delivery Address: {Delivery.Address}");
-            Console.WriteLine($"Products: {string.Join(", ", Delivery.Products)}");
+            Console.WriteLine("Products ordered:");
+            foreach (string productInfo in Delivery.Products)
+            {
+                string[] parts = productInfo.Split('x');
+                string productName = parts[0].Trim();
+                int quantity = int.Parse(parts[1].Trim());
+                Console.WriteLine($"{productName}: {quantity}");
+            }
             Console.WriteLine($"Delivery Time {Delivery.DeliveryTime.ToString("yyyy-MM-dd HH:mm")}");
             Delivery.GetDeliveryType();
             Delivery.DisplaySpecificDeliveryData();
