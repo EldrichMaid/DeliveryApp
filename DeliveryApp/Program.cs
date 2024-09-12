@@ -5,9 +5,10 @@
         internal string Address;
         internal DateTime DeliveryTime;
         internal List<string> Products;
+       
         public abstract void GetSpecificDeliveryData();
         public abstract void DisplaySpecificDeliveryData();
-        public abstract void GetDeliveryType();
+        public abstract void GetDeliveryType();         
         public void GetProducts()
         {
             Console.WriteLine("Enter products (enter 'done' to finish):");
@@ -227,13 +228,17 @@
             Console.WriteLine("Enter desired delivery time (YYYY-MM-DD HH:mm):");
             Delivery.DeliveryTime = DateTime.Parse(Console.ReadLine());
             Delivery.GetDeliveryTypeFromUser();
-
+            Console.WriteLine("Enter order number:");
+            Number = int.Parse(Console.ReadLine());
+            Console.WriteLine("Enter order description:");
+            Description = Console.ReadLine();
         }
 
 
         public void DisplayOrderInfo()
         {
             Console.WriteLine($"Order Number: {Number}");
+            Console.WriteLine($"Order Number: {Description}");
             Console.WriteLine($"Delivery Address: {Delivery.Address}");
             Console.WriteLine("Products ordered:");
             foreach (string productInfo in Delivery.Products)
@@ -253,7 +258,9 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            Order<Delivery, string> Order = new Order<Delivery, string>();
+            Order.GetOrderData();
+            Order.DisplayOrderInfo();
         }
     }
 }
