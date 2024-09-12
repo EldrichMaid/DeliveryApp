@@ -2,9 +2,9 @@
 {
     abstract class Delivery
     {
-        public string Address;
-        public DateTime DeliveryTime;
-        public List<string> Products;
+        internal string Address;
+        internal DateTime DeliveryTime;
+        internal List<string> Products;
         public abstract void GetSpecificDeliveryData();
         public abstract void DisplaySpecificDeliveryData();
         public abstract void GetDeliveryType();
@@ -216,10 +216,10 @@
     class Order<TDelivery,
     TStruct> where TDelivery : Delivery
     {
-        public TDelivery Delivery;
-        public int Number;
-        public string Description;
-        private void GetOrderData()
+        internal TDelivery Delivery;
+        internal int Number;
+        internal string Description;
+        public void GetOrderData()
         {
             Console.WriteLine("Enter delivery address:");
             Delivery.Address = Console.ReadLine();
