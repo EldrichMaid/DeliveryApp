@@ -1,86 +1,18 @@
-﻿namespace DeliveryApp
-{
-    abstract class Delivery
-    {
-        internal string Address;
-        internal DateTime DeliveryTime;
-        internal List<string> Products;
-       
-        public abstract void GetSpecificDeliveryData();
-        public abstract void DisplaySpecificDeliveryData();
-        public abstract void GetDeliveryType();         
-        public void GetProducts()
-        {
-            Console.WriteLine("Enter products (enter 'done' to finish):");
-            Products = new List<string>();
-            string product = "";
-            while (product != "done")
-            {
-                product = Console.ReadLine();
-                if (product != "done")
-                {
-                    Console.WriteLine("Enter quantity for " + product + ":");
-                    int quantity = int.Parse(Console.ReadLine());
-                    Products.Add($"{product} x {quantity}");
-                }
-            }
-        }
-        public void GetDeliveryTypeFromUser()
-        {
-            Console.WriteLine("Is the delivery personal or corporate? (personal/corporate)");
-            string deliveryType = Console.ReadLine();
-            if (deliveryType == "personal")
-            {
-                Console.WriteLine("Is the delivery to a home or a pickpoint? (home/pickpoint)");
-                string personalDeliveryType = Console.ReadLine();
-                if (personalDeliveryType == "home")
-                {
-                    this.GetDeliveryType();
-                }
-                else if (personalDeliveryType == "pickpoint")
-                {
-                    this.GetDeliveryType();
-                }
-                else
-                {
-                    Console.WriteLine("Invalid delivery type.");
-                }
-            }
-            else if (deliveryType == "corporate")
-            {
-                Console.WriteLine("Is the delivery for retail or not? (retail/corporate)");
-                string corporateDeliveryType = Console.ReadLine();
-                if (corporateDeliveryType == "retail")
-                {
-                    this.GetDeliveryType();
-                }
-                else if (corporateDeliveryType == "corporate")
-                {
-                    this.GetDeliveryType();
-                }
-                else
-                {
-                    Console.WriteLine("Invalid delivery type.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid delivery type.");
-            }
-        }
-    }
+﻿using System.Runtime.InteropServices.ComTypes;
 
-    class HomeDelivery : Delivery
+namespace DeliveryApp
+{        
+    internal class HomeDelivery : Order
     {
-        internal int EntranceNumber { get; set; }
-        internal string EntranceCode { get; set; }
-        internal int FloorNumber { get; set; }
-        internal int DoorNumber { get; set; }
-        public override void GetDeliveryType()
+        private int EntranceNumber;
+        private string EntranceCode;
+        private int FloorNumber;
+        private int DoorNumber;
+        internal override void GetDeliveryType()
         {
             Console.WriteLine("Delivery Type: Home Delivery");
         }
-        public override void GetSpecificDeliveryData()
+        internal override void GetSpecificDeliveryData()
         {
             Console.WriteLine("Enter entrance number:");
             EntranceNumber = int.Parse(Console.ReadLine());
@@ -91,7 +23,7 @@
             Console.WriteLine("Enter door number:");
             DoorNumber = int.Parse(Console.ReadLine());
         }
-        public override void DisplaySpecificDeliveryData()
+        internal override void DisplaySpecificDeliveryData()
         {
             Console.WriteLine($"Entrance Number: {EntranceNumber}");
             Console.WriteLine($"Entrance Code: {EntranceCode}");
@@ -100,14 +32,14 @@
         }
     }
 
-    class PickPointDelivery : Delivery
+    internal class PickPointDelivery : Order
     {
-        internal string PickPointCode { get; set; }
-        public override void GetDeliveryType()
+        private string PickPointCode;
+        internal override void GetDeliveryType()
         {
             Console.WriteLine("Delivery Type: Pick Point Delivery");
         }
-        public override void GetSpecificDeliveryData()
+        internal override void GetSpecificDeliveryData()
         {
             Console.WriteLine("Choose a pick-up point (a, b, c, d):");
             PickPointCode = Console.ReadLine();
@@ -116,22 +48,22 @@
                 Console.WriteLine("Invalid pick-up point code.");
             }  
         }
-        public override void DisplaySpecificDeliveryData()
+        internal override void DisplaySpecificDeliveryData()
         {
             Console.WriteLine($"Pick-up Point: {PickPointCode}");
         }
     }
 
-    class RetailDelivery : Delivery
+    internal class RetailDelivery : Order
     {
-        internal bool IsToWarehouse { get; set; }
-        internal string Department { get; set; }
-        internal bool NeedsUnloading { get; set; }
-        public override void GetDeliveryType()
+        private bool IsToWarehouse;
+        private string Department;
+        private bool NeedsUnloading;
+        internal override void GetDeliveryType()
         {
             Console.WriteLine("Delivery Type: Retail Delivery");
         }
-        public override void GetSpecificDeliveryData()
+        internal override void GetSpecificDeliveryData()
         {
             Console.WriteLine("Is the delivery to a warehouse or a store? (warehouse/store)");
             string deliveryLocation = Console.ReadLine();
@@ -153,7 +85,7 @@
                 Console.WriteLine("Invalid delivery location.");
             }
         }
-        public override void DisplaySpecificDeliveryData()
+        internal override void DisplaySpecificDeliveryData()
         {
             if (IsToWarehouse)
             {
@@ -168,16 +100,16 @@
         }
     }
 
-    class CorpDelivery : Delivery
+    internal class CorpDelivery : Order
     {
-        internal bool IsWorkingHoursDelivery { get; set; }
-        internal int WorkingHour { get; set; }
-        internal bool NeedsPass { get; set; }
-        public override void GetDeliveryType()
+        private bool IsWorkingHoursDelivery;
+        private int WorkingHour;
+        private bool NeedsPass;
+        internal override void GetDeliveryType()
         {
             Console.WriteLine("Delivery Type: Corporate Delivery");
         }
-        public override void GetSpecificDeliveryData()
+        internal override void GetSpecificDeliveryData()
         {
             Console.WriteLine("Enter working hour (24-hour format):");
             while (true)
@@ -199,7 +131,7 @@
             string passAnswer = Console.ReadLine();
             NeedsPass = passAnswer.ToLower() == "yes";
         }
-        public override void DisplaySpecificDeliveryData()
+        internal override void DisplaySpecificDeliveryData()
         {
             Console.WriteLine($"Working Hour: {WorkingHour:D2}");
             Console.WriteLine($"Pass Required: {NeedsPass}");
@@ -214,53 +146,125 @@
         }
     }
 
-    class Order<TDelivery,
-    TStruct> where TDelivery : Delivery
+    abstract class Order
     {
-        internal TDelivery Delivery;
-        internal int Number;
-        internal string Description;
-        public void GetOrderData()
+        private int Number;
+        private string Description;
+        private string Address;
+        private List<string> Products;
+        private DateTime DeliveryTime;
+        internal abstract void GetSpecificDeliveryData();
+        internal abstract void DisplaySpecificDeliveryData();
+        internal abstract void GetDeliveryType();
+        internal void GetOrderData()
         {
+            
             Console.WriteLine("Enter delivery address:");
-            Delivery.Address = Console.ReadLine();
-            Delivery.GetProducts();
+            Address = Console.ReadLine();
+            Console.WriteLine("Enter products (enter 'done' to finish):");
+            Products = new List<string>();
+            string product = "";
+            while (product != "done")
+            {
+                product = Console.ReadLine();
+                if (product != "done")
+                {
+                    Console.WriteLine("Enter quantity for " + product + ":");
+                    int quantity = int.Parse(Console.ReadLine());
+                    Products.Add($"{product} x {quantity}");
+                }
+            }
             Console.WriteLine("Enter desired delivery time (YYYY-MM-DD HH:mm):");
-            Delivery.DeliveryTime = DateTime.Parse(Console.ReadLine());
-            Delivery.GetDeliveryTypeFromUser();
+            DeliveryTime = DateTime.Parse(Console.ReadLine());            
             Console.WriteLine("Enter order number:");
             Number = int.Parse(Console.ReadLine());
             Console.WriteLine("Enter order description:");
             Description = Console.ReadLine();
+                        
         }
 
-
-        public void DisplayOrderInfo()
+        internal void DisplayOrderInfo()
         {
             Console.WriteLine($"Order Number: {Number}");
             Console.WriteLine($"Order Number: {Description}");
-            Console.WriteLine($"Delivery Address: {Delivery.Address}");
+            Console.WriteLine($"Delivery Address: {Address}");
             Console.WriteLine("Products ordered:");
-            foreach (string productInfo in Delivery.Products)
+            foreach (string productInfo in Products)
             {
                 string[] parts = productInfo.Split('x');
                 string productName = parts[0].Trim();
                 int quantity = int.Parse(parts[1].Trim());
                 Console.WriteLine($"{productName}: {quantity}");
             }
-            Console.WriteLine($"Delivery Time {Delivery.DeliveryTime.ToString("yyyy-MM-dd HH:mm")}");
-            Delivery.GetDeliveryType();
-            Delivery.DisplaySpecificDeliveryData();
+            Console.WriteLine($"Delivery Time {DeliveryTime.ToString("yyyy-MM-dd HH:mm")}");           
         }
-    }
+    }    
 
     internal class Program
     {
+        internal static void GetDeliveryTypeFromUser()
+        {
+            Console.WriteLine("Is the delivery personal or corporate? (personal/corporate)");
+            string deliveryType = Console.ReadLine();
+            if (deliveryType == "personal")
+            {
+                Console.WriteLine("Is the delivery to a home or a pickpoint? (home/pickpoint)");
+                string personalDeliveryType = Console.ReadLine();
+                if (personalDeliveryType == "home")
+                {
+                    HomeDelivery order = new HomeDelivery();
+                    order.GetOrderData();
+                    order.GetSpecificDeliveryData();
+                    order.DisplayOrderInfo();
+                    order.DisplaySpecificDeliveryData();
+                }
+                else if (personalDeliveryType == "pickpoint")
+                {
+                    PickPointDelivery order = new PickPointDelivery();
+                    order.GetOrderData();
+                    order.GetSpecificDeliveryData();
+                    order.DisplayOrderInfo();
+                    order.DisplaySpecificDeliveryData();
+                }
+                else
+                {
+                    Console.WriteLine("Invalid delivery type.");
+                }
+            }
+            else if (deliveryType == "corporate")
+            {
+                Console.WriteLine("Is the delivery for retail or not? (retail/corporate)");
+                string corporateDeliveryType = Console.ReadLine();
+                if (corporateDeliveryType == "retail")
+                {
+                    RetailDelivery order = new RetailDelivery();
+                    order.GetOrderData();
+                    order.GetSpecificDeliveryData();
+                    order.DisplayOrderInfo();
+                    order.DisplaySpecificDeliveryData();
+                }
+                else if (corporateDeliveryType == "corporate")
+                {
+                    CorpDelivery order = new CorpDelivery();
+                    order.GetOrderData();
+                    order.GetSpecificDeliveryData();
+                    order.DisplayOrderInfo();
+                    order.DisplaySpecificDeliveryData();
+                }
+                else
+                {
+                    Console.WriteLine("Invalid delivery type.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid delivery type.");
+            }
+        }
+
         static void Main(string[] args)
         {
-            Order<Delivery, string> Order = new Order<Delivery, string>();
-            Order.GetOrderData();
-            Order.DisplayOrderInfo();
+            GetDeliveryTypeFromUser();            
         }
     }
 }
